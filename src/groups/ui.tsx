@@ -1,41 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { createRoot } from "react-dom/client";
+import React, { useState } from "react";
 import st from "./styles.module.css";
 
 import {
-  AdaptivityProvider,
-  ConfigProvider,
-  AppRoot,
-  SplitLayout,
-  SplitCol,
-  View,
-  Panel,
-  PanelHeader,
-  Header,
   Group,
   SimpleCell,
-  usePlatform,
-  Image,
   Title,
   Avatar,
   Card,
-  CardScroll,
-  UsersStack,
   Div,
   Text,
   MiniInfoCell,
   Button,
-  ModalCard,
   ModalCardBase,
-  Spacing,
 } from "@vkontakte/vkui";
 import "@vkontakte/vkui/dist/vkui.css";
 
 import { Icon20FollowersOutline } from "@vkontakte/icons";
 
 import { IGroup } from "../interfaces";
-
-// import mockData from "./../groups.json";
 
 type Props = {
   group: IGroup;
@@ -64,7 +46,7 @@ export const GroupCard = ({ group }: Props) => {
           size={100}
           style={{ backgroundColor: `${group.avatar_color}` }}
         />
-        <Div className={st.info}>
+        <Div>
           <Title>{group.name}</Title>
           <Text weight="3">
             {group.closed ? "Закрытое" : "Открытое"} сообщество

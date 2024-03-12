@@ -9,7 +9,6 @@ import {
   Header,
   Group,
   usePlatform,
-  Title,
   Select,
   CustomSelectOptionInterface,
   Avatar,
@@ -33,11 +32,11 @@ const App = () => {
       }
     } catch (error) {
       return {
-        result: 0, // Пример возврата результата при ошибке
+        result: 0,
       };
     }
     return {
-      result: 0, // Пример возврата результата при ошибке
+      result: 0,
     };
   };
 
