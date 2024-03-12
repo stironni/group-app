@@ -42,7 +42,6 @@ type Props = {
 };
 
 const GroupCard = ({ group }: Props) => {
-  console.log("hi");
   const [show, setShow] = useState(false);
 
   const onClose = () => {
@@ -56,8 +55,6 @@ const GroupCard = ({ group }: Props) => {
   const GetFirstLatter = (firstName: string, LastName: string) => {
     return `${firstName[0]}${LastName[0]}`;
   };
-
-  console.log(group);
 
   return (
     <>

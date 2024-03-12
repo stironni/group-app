@@ -30,8 +30,6 @@ const App = () => {
 
   const [groups, setGroups] = React.useState<any>([]);
 
-  console.log(groups);
-
   const isClose: CustomSelectOptionInterface[] = [
     {
       value: "0",
@@ -73,28 +71,35 @@ const App = () => {
 
     return [
       ...uniqueColors.map((color, key) => ({
-        value: key + 1,
+        value: color,
         label: color,
       })),
-      { value: 0, label: "Все" },
-    ].sort((a, b) => a.value - b.value);
+      { value: "all", label: "Все" },
+    ];
   };
 
   const colorArray: CustomSelectOptionInterface[] = getColor();
-
-  console.log("isColor", colorArray);
 
   useEffect(() => {
     setGroups(mockData);
     getColor();
   }, []);
 
-  useLayoutEffect(() => {
-    const selectElement = document.getElementById("privat-id");
-    // const selectedValue = selectElement?.selectElement;
+  const [privatValue, setPrivatValue] = useState("0");
+  const [friendValue, setFriendValue] = useState("0");
+  const [colorValue, setColorValue] = useState("all");
 
-    console.log("privateValue", selectElement);
-  }, []);
+  const handleSubmitPrivat = (event: any) => {
+    setPrivatValue(event.target.value);
+  };
+
+  const handleSubmitFriend = (event: any) => {
+    setFriendValue(event.target.value);
+  };
+
+  const handleSubmitColor = (event: any) => {
+    setColorValue(event.target.value);
+  };
 
   return (
     <AppRoot>
@@ -112,20 +117,42 @@ const App = () => {
                   options={isClose}
                   defaultValue={"0"}
                   id="privat-id"
-                  onSelect={(event) => console.log()}
+                  onChange={handleSubmitPrivat}
                 />
                 <label htmlFor="color-id">Цвет</label>
-                <Select options={colorArray} defaultValue={"0"} id="color-id" />
+                <Select
+                  options={colorArray}
+                  defaultValue={"all"}
+                  id="color-id"
+                  onChange={handleSubmitColor}
+                />
 
                 <label htmlFor="friends-id">Друзья</label>
                 <Select
                   options={isFriends}
                   defaultValue={"0"}
                   id="friends-id"
+                  onChange={handleSubmitFriend}
                 />
-                {groups.map((group: IGroup) => (
-                  <GroupCard group={group} key={group.id} />
-                ))}
+                {groups
+                  .filter((group: IGroup) => {
+                    console.log(privatValue);
+                    if (privatValue === "0") return group;
+                    if (privatValue === "1" && !group.closed) return group;
+                    if (privatValue === "2" && group.closed) return group;
+                  })
+                  .filter((group: IGroup) => {
+                    if (friendValue === "0") return group;
+                    if (friendValue === "1" && group.friends) return group;
+                    if (friendValue === "2" && !group.friends) return group;
+                  })
+                  .filter((group: IGroup) => {
+                    if (colorValue === "all") return group;
+                    if (colorValue === group.avatar_color) return group;
+                  })
+                  .map((group: IGroup) => (
+                    <GroupCard group={group} key={group.id} />
+                  ))}
               </Group>
             </Panel>
           </View>
