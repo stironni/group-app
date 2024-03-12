@@ -42,7 +42,8 @@ const App = () => {
 
   const platform = usePlatform();
 
-  const [groups, setGroups] = useState<any>(getGroupsData(mockData).data);
+  const { data, result } = getGroupsData(mockData);
+  const [groups, setGroups] = useState<any>(data);
 
   const isClose: CustomSelectOptionInterface[] = [
     {
@@ -96,7 +97,7 @@ const App = () => {
   const colorArray: CustomSelectOptionInterface[] = getColor();
 
   useEffect(() => {
-    setGroups(mockData);
+    setGroups(data);
   }, []);
 
   const [privatValue, setPrivatValue] = useState("0");
