@@ -1,1 +1,1 @@
-import  GroupCard from './ui'
+export  {GroupCard} from './ui'

@@ -41,7 +41,7 @@ type Props = {
   group: IGroup;
 };
 
-const GroupCard = ({ group }: Props) => {
+export const GroupCard = ({ group }: Props) => {
   const [show, setShow] = useState(false);
 
   const onClose = () => {
@@ -128,5 +128,3 @@ const GroupCard = ({ group }: Props) => {
     </>
   );
 };
-
-export default GroupCard;
