@@ -34,7 +34,7 @@ const App = () => {
     try {
       if (mockData) {
         setGroups(mockData);
-        setResult(0);
+        setResult(1);
       }
     } catch (error) {
       setResult(0);
@@ -117,6 +117,8 @@ const App = () => {
   const handleSubmitColor = (event: any) => {
     setColorValue(event.target.value);
   };
+
+  if (!result) return <p>ERROR</p>;
   return (
     <AppRoot>
       <SplitLayout
