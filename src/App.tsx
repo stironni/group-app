@@ -19,31 +19,36 @@ import "@vkontakte/vkui/dist/vkui.css";
 
 import mockData from "./groups.json";
 import { GroupCard } from "./groups/ui";
-import { GetGroupsResponse, IGroup } from "./interfaces";
+import { IGroup } from "./interfaces";
 
 const App = () => {
-  const getGroupsData = (mockData: IGroup[]): GetGroupsResponse => {
+  const [groups, setGroups] = useState<IGroup[]>();
+  const [result, setResult] = useState<number>();
+
+  const getGroupsData = async (mockData: IGroup[]) => {
+    await new Promise((result, reject) => {
+      setTimeout(() => {
+        result(true);
+      }, 1000);
+    });
     try {
       if (mockData) {
-        return {
-          result: 1,
-          data: mockData,
-        };
+        setGroups(mockData);
+        setResult(0);
       }
     } catch (error) {
-      return {
-        result: 0,
-      };
+      setResult(0);
     }
-    return {
-      result: 0,
-    };
+    console.log(mockData);
   };
 
-  const platform = usePlatform();
+  useEffect(() => {
+    if (!result) {
+      getGroupsData(mockData);
+    }
+  }, []);
 
-  const { data, result } = getGroupsData(mockData);
-  const [groups, setGroups] = useState<any>(data);
+  const platform = usePlatform();
 
   const isClose: CustomSelectOptionInterface[] = [
     {
@@ -75,8 +80,9 @@ const App = () => {
     },
   ];
 
-  const getColor = (): CustomSelectOptionInterface[] => {
-    const uniqueColors: string[] = Array.from(
+  const getColor = (): CustomSelectOptionInterface[] | undefined => {
+    if (!groups) return;
+    const uniqueColors = Array.from(
       new Set(
         groups
           .filter((group: IGroup) => group.avatar_color !== undefined)
@@ -94,11 +100,7 @@ const App = () => {
     ];
   };
 
-  const colorArray: CustomSelectOptionInterface[] = getColor();
-
-  useEffect(() => {
-    setGroups(data);
-  }, []);
+  const colorArray: CustomSelectOptionInterface[] | undefined = getColor();
 
   const [privatValue, setPrivatValue] = useState("0");
   const [friendValue, setFriendValue] = useState("0");
@@ -115,7 +117,6 @@ const App = () => {
   const handleSubmitColor = (event: any) => {
     setColorValue(event.target.value);
   };
-
   return (
     <AppRoot>
       <SplitLayout
@@ -140,8 +141,9 @@ const App = () => {
                   <Spacing size={15} />
                   <label htmlFor="color-id">Цвет</label>
                   <Spacing size={5} />
+
                   <Select
-                    options={colorArray}
+                    options={colorArray ? colorArray : []}
                     defaultValue={"all"}
                     id="color-id"
                     onChange={handleSubmitColor}
@@ -149,6 +151,7 @@ const App = () => {
                       width: "420px",
                     }}
                   />
+
                   <Spacing size={15} />
                   <label htmlFor="friends-id">Друзья</label>
                   <Spacing size={5} />
@@ -163,28 +166,32 @@ const App = () => {
                   />
                 </Div>
               </Group>
-              <Group header={<Header mode="secondary">Сообщества</Header>}>
-                {groups
-                  .filter((group: IGroup) => {
-                    if (privatValue === "0") return group;
-                    if (privatValue === "1" && !group.closed) return group;
-                    if (privatValue === "2" && group.closed) return group;
-                  })
-                  .filter((group: IGroup) => {
-                    if (friendValue === "0") return group;
-                    if (friendValue === "1" && group.friends) return group;
-                    if (friendValue === "2" && !group.friends) return group;
-                  })
-                  .filter((group: IGroup) => {
-                    if (colorValue === "all") return group;
-                    if (colorValue === group.avatar_color) return group;
-                    if (colorValue === "not" && !group.avatar_color)
-                      return group;
-                  })
-                  .map((group: IGroup) => (
-                    <GroupCard group={group} key={group.id} />
-                  ))}
-              </Group>
+              {groups ? (
+                <Group header={<Header mode="secondary">Сообщества</Header>}>
+                  {groups
+                    .filter((group: IGroup) => {
+                      if (privatValue === "0") return group;
+                      if (privatValue === "1" && !group.closed) return group;
+                      if (privatValue === "2" && group.closed) return group;
+                    })
+                    .filter((group: IGroup) => {
+                      if (friendValue === "0") return group;
+                      if (friendValue === "1" && group.friends) return group;
+                      if (friendValue === "2" && !group.friends) return group;
+                    })
+                    .filter((group: IGroup) => {
+                      if (colorValue === "all") return group;
+                      if (colorValue === group.avatar_color) return group;
+                      if (colorValue === "not" && !group.avatar_color)
+                        return group;
+                    })
+                    .map((group: IGroup) => (
+                      <GroupCard group={group} key={group.id} />
+                    ))}
+                </Group>
+              ) : (
+                <p>Loading ....</p>
+              )}
             </Panel>
           </View>
         </SplitCol>
